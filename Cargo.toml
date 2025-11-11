@@ -1,0 +1,48 @@
+[package]
+name = "bel_20_node"
+version = "1.0.10"
+edition = "2021"
+
+[workspace]
+members = [".", "packages/*"]
+
+[dependencies]
+anyhow = "1.0.91"
+bellscoincore-rpc = "0.17.3"
+num-traits = "0.2.19"
+serde = { version = "1.0.213", features = ["derive"] }
+serde_with = "3.11.0"
+tracing = "0.1.40"
+serde_json = "1.0.132"
+bellscoin = "0.30.8"
+
+rocksdb-wrapper = { path = "./packages/rocksdb-wrapper" }
+tokio = { version = "1.43.1", features = ["full"] }
+tower-http = { version = "0.6.5", features = ["compression-full"] }
+itertools = "0.14.0"
+rayon = "1.10.0"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+axum = { version = "0.8.1", features = ["macros"] }
+tracing-indicatif = "=0.3.6"
+indicatif = "=0.17.9"
+dutils = "0.1.12"
+parking_lot = "0.12.3"
+dotenv = "0.15.0"
+tokio-stream = "0.1.16"
+axum-streams = { version = "0.20.0", features = ["json"] }
+nintypes = { version = "0.2.2", features = ["bellscoin", "schema"] }
+validator = { version = "0.20.0", features = ["derive"] }
+thiserror = "2.0.12"
+nint-blk = { path = "./packages/new-blk-parser" }
+bitcoin_hashes = "0.12.0"
+kanal = "0.1.1"
+signal-hook = "0.3.18"
+aide = { version = "0.15.0", features = [
+    "axum",
+    "axum-json",
+    "axum-matched-path",
+    "axum-query",
+    "macros",
+    "scalar",
+] }
+schemars = "0.9.0"
