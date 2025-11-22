@@ -53,11 +53,12 @@ where
     let val = <Cow<str> as serde::Deserialize>::deserialize(deserializer)?;
     let val = val.as_bytes().to_vec();
 
-    if val.len() != 4 {
-        return Err(Error::custom("invalid token tick"));
+    if val.len() > 6 {
+        return Err(Error::custom("invalid token tick length"));
     }
 
-    Ok(val.try_into().unwrap())
+    // TryFrom<Vec<u8>> for OriginalTokenTick already handles length check <= 6 and padding
+    val.try_into().map_err(Error::custom)
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -98,15 +99,18 @@ pub enum MintProto {
     Prc20(MintProtoWrapper),
     #[serde(rename = "ltc-20")]
     Ltc20(MintProtoWrapper),
+    #[serde(rename = "b1t-20")]
+    B1t20(MintProtoWrapper),
 }
 
 impl MintProto {
     pub fn value(&self) -> anyhow::Result<MintProtoWrapper> {
         match self {
-            MintProto::Bel20(v) if *BLOCKCHAIN == Blockchain::Bellscoin => Ok(*v),
+            MintProto::Bel20(v) if *BLOCKCHAIN == Blockchain::Bellscoin || *BLOCKCHAIN == Blockchain::B1TCore => Ok(*v),
             MintProto::Drc20(v) if *BLOCKCHAIN == Blockchain::Dogecoin => Ok(*v),
             MintProto::Prc20(v) if *BLOCKCHAIN == Blockchain::Pepecoin => Ok(*v),
             MintProto::Ltc20(v) if *BLOCKCHAIN == Blockchain::Litecoin => Ok(*v),
+            MintProto::B1t20(v) if *BLOCKCHAIN == Blockchain::B1TCore => Ok(*v),
             _ => anyhow::bail!("Unsupported type"),
         }
     }
@@ -137,15 +141,18 @@ pub enum DeployProto {
     Prc20(DeployProtoWrapper),
     #[serde(rename = "ltc-20")]
     Ltc20(DeployProtoWrapper),
+    #[serde(rename = "b1t-20")]
+    B1t20(DeployProtoWrapper),
 }
 
 impl DeployProto {
     pub fn value(&self) -> anyhow::Result<DeployProtoWrapper> {
         match self {
-            DeployProto::Bel20(v) if *BLOCKCHAIN == Blockchain::Bellscoin => Ok(*v),
+            DeployProto::Bel20(v) if *BLOCKCHAIN == Blockchain::Bellscoin || *BLOCKCHAIN == Blockchain::B1TCore => Ok(*v),
             DeployProto::Drc20(v) if *BLOCKCHAIN == Blockchain::Dogecoin => Ok(*v),
             DeployProto::Prc20(v) if *BLOCKCHAIN == Blockchain::Pepecoin => Ok(*v),
             DeployProto::Ltc20(v) if *BLOCKCHAIN == Blockchain::Litecoin => Ok(*v),
+            DeployProto::B1t20(v) if *BLOCKCHAIN == Blockchain::B1TCore => Ok(*v),
             _ => anyhow::bail!("Unsupported type"),
         }
     }
@@ -171,15 +178,18 @@ pub enum TransferProto {
     Prc20(MintProtoWrapper),
     #[serde(rename = "ltc-20")]
     Ltc20(MintProtoWrapper),
+    #[serde(rename = "b1t-20")]
+    B1t20(MintProtoWrapper),
 }
 
 impl TransferProto {
     pub fn value(&self) -> anyhow::Result<MintProtoWrapper> {
         match self {
-            TransferProto::Bel20(v) if *BLOCKCHAIN == Blockchain::Bellscoin => Ok(*v),
+            TransferProto::Bel20(v) if *BLOCKCHAIN == Blockchain::Bellscoin || *BLOCKCHAIN == Blockchain::B1TCore => Ok(*v),
             TransferProto::Drc20(v) if *BLOCKCHAIN == Blockchain::Dogecoin => Ok(*v),
             TransferProto::Prc20(v) if *BLOCKCHAIN == Blockchain::Pepecoin => Ok(*v),
             TransferProto::Ltc20(v) if *BLOCKCHAIN == Blockchain::Litecoin => Ok(*v),
+            TransferProto::B1t20(v) if *BLOCKCHAIN == Blockchain::B1TCore => Ok(*v),
             _ => anyhow::bail!("Unsupported type"),
         }
     }

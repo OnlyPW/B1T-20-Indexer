@@ -359,7 +359,7 @@ impl rocksdb_wrapper::Pebble for AddressToken {
     fn from_bytes(v: Cow<[u8]>) -> anyhow::Result<Self::Inner> {
         Ok(Self {
             address: v[..32].try_into().anyhow()?,
-            token: OriginalTokenTick(v[32..].try_into().expect("Expected [u8;4], but got more")),
+            token: OriginalTokenTick(v[32..].try_into().map_err(|_| anyhow::anyhow!("Expected [u8;6], but got something else"))?),
         })
     }
 
